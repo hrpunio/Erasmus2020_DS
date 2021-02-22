@@ -1,0 +1,151 @@
+
+R version 3.5.2 (2018-12-20) -- "Eggshell Igloo"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-redhat-linux-gnu (64-bit)
+
+R jest oprogramowaniem darmowym i dostarczany jest BEZ JAKIEJKOLWIEK GWARANCJI.
+Możesz go rozpowszechniać pod pewnymi warunkami.
+Wpisz 'license()' lub 'licence()' aby uzyskać szczegóły dystrybucji.
+
+R jest projektem kolaboracyjnym z wieloma uczestnikami.
+Wpisz 'contributors()' aby uzyskać więcej informacji oraz
+'citation()' aby dowiedzieć się jak cytować R lub pakiety R w publikacjach.
+
+Wpisz 'demo()' aby zobaczyć demo, 'help()' aby uzyskać pomoc on-line, lub
+'help.start()' aby uzyskać pomoc w przeglądarce HTML.
+Wpisz 'q()' aby wyjść z R.
+
+> require(ggplot2)
+Ładowanie wymaganego pakietu: ggplot2
+> pkw <- read.csv("obwody2011pkw2019gus.csv", sep = ';',  header=T, na.string="NA");
+> 
+> #bar.color <- "lightblue";
+> bar.color <- "blue";
+> 
+> total2019w <- sum(pkw$wyborcy2019)
+> total2019m.gus <- sum(pkw$ludnosc2018.gus)
+> total2019m.pkw <- sum(pkw$mieszkancy2019)
+> 
+> mpp2019pkw <- pkw$wyborcy2019 / total2019w * 460
+> mpp2019gus <- pkw$ludnosc2018.gus/ total2019m.gus * 460
+> mpp2019pkw.ludnosc <- pkw$mieszkancy2019 / total2019m.pkw * 460
+> 
+> sum (pkw$mandaty)
+[1] 460
+> sum (mpp2019pkw)
+[1] 460
+> sum (mpp2019gus)
+[1] 460
+> 
+> pkw$mpp2019pkw <- mpp2019pkw
+> pkw$mpp2019gus <- mpp2019gus
+> pkw$mpp2019pkw.ludnosc <- mpp2019pkw.ludnosc
+> 
+> pkw$diff.w <- pkw$wyborcy2019 - pkw$wyborcy2011
+> pkw$diff.m <- pkw$mieszkancy2019 - pkw$mieszkancy2011
+> 
+> ##okrnr;mandatow;wyborcy2011;mieszkancy2011;obwody;powiaty;gminy;mpp;wyborcy2019;mieszkancy2019;kandydaci2019;ludnosc2018.gus
+> diff.scale <- c( -240, -220, -200, -180, -160, -140, -120, -100, -80, -60, -40, -20,
++    0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 ) * 1000
+> mandat.scale <- c( 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
+> okr.scale <- c(250,500,750,1000,1250,1500,1750) * 1000
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("Wyborcy/mieszkańcy/ludność PKW/GUS") +
++   geom_line(aes(y = wyborcy2011, colour = 'w2011'), size=.25) +
++   geom_line(aes(y = wyborcy2019, colour = 'w2019'), size=.5)+
++   geom_line(aes(y = mieszkancy2011, colour = 'm2011'), size=.25) +
++   geom_line(aes(y = mieszkancy2019, colour = 'm2019'), size=.25) +
++   geom_line(aes(y = ludnosc2018.gus, colour = 'gus2018'), size=.25)+
++   ylab(label="#") +
++   xlab(label="okręg") +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("Wyborcy vs mieszkańcy: różnice (PKW 2011/2019)") +
++   geom_point(aes(y = diff.w, colour = 'W2019-11'), size=3) +
++   geom_line(aes(y = diff.w, colour = 'W2019-11'), size=.4) +
++   geom_point(aes(y = diff.m, colour = 'M2019-11'), size=3) +
++   geom_text(data=pkw, aes(label=sprintf("%s", okrnr), y= diff.w), vjust=-1.25, size=2 ) +
++   ylab(label="#") +
++   xlab(label="okręg") +
++   scale_y_continuous(breaks=diff.scale) +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("mieszkańcy (PKW/2011/2019) vs ludność (GUS/2018)") +
++   geom_line(aes(y = mieszkancy2011, colour = 'm2011'), size=.25) +
++   geom_line(aes(y = mieszkancy2019, colour = 'm2019'), size=.25) +
++   geom_line(aes(y = ludnosc2018.gus, colour = 'gus2018'), size=.5)+
++   ylab(label="#") +
++   xlab(label="okręg") +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> pkw$diff.mm <- pkw$mieszkancy2019 - pkw$ludnosc2018.gus
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("Mieszkańcy vs ludność: różnice (PKW/2019 / GUS/2018)") +
++   geom_point(aes(y = diff.mm, colour = '2018l/2019m'), size=3) +
++   geom_line(aes(y = diff.mm, colour = '2018l/2019m'), size=.4) +
++   ##geom_point(aes(y = diff.mm, colour = '2018l/2019m'), size=1) +
++   ##geom_text(data=pkw, aes(label=sprintf("%.1f", diff.mm/1000), y= diff.mm), vjust=-1.25, size=3 ) +
++   geom_text(data=pkw, aes(label=sprintf("%s", okrnr), y= diff.mm), vjust=-1.25, size=3 ) +
++   ylab(label="#") +
++   xlab(label="okręg") +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> ## bar plot
+> ggplot(pkw, aes(x = reorder(okrnr, wyborcy2019), y=wyborcy2019 )) +
++   ggtitle("Liczba wyborców: (PKW/2019)") +
++   #geom_bar(stat="identity", color=bar.color, fill=bar.color,  alpha=.5  ) +
++   geom_bar(stat="identity", fill=bar.color,  alpha=.5  ) +
++   scale_y_continuous(breaks=okr.scale) +
++   xlab(label="okręg") +
++   ylab(label="#") +
++   coord_flip()+
++   theme(plot.title = element_text(hjust = 0.5))
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("mandaty wg PKW i GUS (PKW/2019 / GUS/2018)") +
++   geom_point(aes(y = mpp2019pkw, colour = 'pkw', alpha=.5), size=2.5) +
++   geom_point(aes(y = mpp2019gus, colour = 'gus', alpha=.5), size=2.5) +
++   geom_point(aes(y = mandaty, colour = 'PKW', alpha=.5), size=3) +
++   geom_text(data=pkw, aes(label=sprintf("%i", okrnr), y= mandaty), vjust=-1.25, size=3 ) +
++   ylab(label="#") +
++   xlab(label="okręg") +
++   scale_y_continuous(breaks=mandat.scale) +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> pkw$m.diff.pkw <- pkw$mpp2019pkw - pkw$mandaty
+> pkw$m.diff.gus <- pkw$mpp2019gus - pkw$mandaty
+> pkw$m.diff.pkw.pkw  <- pkw$mpp2019pkw.ludnosc - pkw$mandaty
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("mandaty wg PKW i GUS: różnice") +
++   geom_point(aes(y = m.diff.pkw, colour = 'pkw'), size=2.5) +
++   geom_point(aes(y = m.diff.gus, colour = 'gus'), size=2.5) +
++   geom_text(data=pkw, aes(label=sprintf("%s", okrnr), y= m.diff.pkw), vjust=-1.25, size=2.0 ) +
++   ylab(label="#") +
++   xlab(label="okręg") +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> ggplot(pkw, aes(x = okrnr)) +
++   ggtitle("mandaty wg PKW: ludność vs wyborcy (różnice)") +
++   geom_point(aes(y = m.diff.pkw, colour = 'pkw/w'), size=2.5) +
++   geom_point(aes(y = m.diff.pkw.pkw, colour = 'pkw/m'), size=2.5) +
++   geom_text(data=pkw, aes(label=sprintf("%s", okrnr), y= m.diff.pkw), vjust=-1.25, size=2.0 ) +
++   ###geom_point(aes(y = mandaty, colour = 'PKW', alpha=.5), size=3) +
++   ylab(label="#") +
++   xlab(label="okręg") +
++   theme(legend.title=element_blank()) +
++   theme(legend.position="top") 
+> 
+> proc.time()
+użytkownik     system   upłynęło 
+     2.587      0.057      2.643 

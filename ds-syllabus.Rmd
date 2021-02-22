@@ -1,0 +1,58 @@
+---
+title: "Descriptive statistics: syllabus"
+author: "Tomasz Przechlewski"
+date: "27 03 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0. Preliminaries
+
+Course material: https://github.com/hrpunio/Erasmus2020_DS
+Look for `clone or download green' button at the right edge, click,
+select `Download ZIP'. Download all course files 
+(data/slides/notes) in one zip archive. Unpack...
+
+Contact: tprzechlewski@gmail.com
+
+## 1. Examining cross-section data with Graphs
+   
+**1-dimensional plots** (pie chart, bar plot, dot plot),
+**distribution charts** (histogram, frequency polygon, box plot),
+**Box-plot** and **violin plot**
+
+lecture notes: stat-graphs.html
+
+## 2. Describing cross-section data with Numbers
+
+**Measure of Central Tendency** (mean, median, mode, quartille),
+**Measure of Spread/Dispersion** (variance, standard deviation, interquartile range or IQR), **Skewness**, **Concentration**
+
+lecture notes: stat-stats.html
+
+## Project
+
+With software of your choice (probably Excel/OpenOffice Calc)
+descibe data distribution with histogram or some other chart.
+Calculate the mean, median, mode, standard deviation, iqr 
+as well as skeweness. Describe results.
+Write report (2--3 pages)
+
+Contact me for details tprzechlewski@gmail.com
+
+## 3. Examining Relationships
+
+**scatter-plot**, **Correlation**, **Regression**, **two-way tables** and   **cathegorical data**
+
+hope COVID19 will go and we will meet in june
+
+## 4. Statistical analysis of time series data
+  **time plots**, **decomposition**, **trend**, **seasonality**, **forecasting**
+
+hope COVID19 will go and we will meet in june
+
+## Project Presentation
+
