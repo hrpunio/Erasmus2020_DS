@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="TP" />
+  <title>Administrowanie Rpi</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Administrowanie Rpi</h1>
+<p class="author">TP</p>
+</header>
+<h3 id="informacje-wstępne">Informacje wstępne</h3>
+<p>Instalowanie pakietów Debiana:</p>
+<pre><code>apt update
+apt search
+apt install</code></pre>
+<p>Swoje skrypty trzymam w katalogu <code>~/bin</code>.</p>
+<p>Do edytowania używam vi. Wyłączam różne wodotryski typu kolorowanie składni/parowanie nawiasów wstawiając do <code>.vimrc</code> następujące deklaracje:</p>
+<pre><code>syntax off
+set history=99
+let loaded_matchparen = 1
+set nohlsearch</code></pre>
+<h3 id="łączenie-się-z-pi">Łączenie się z Pi</h3>
+<p>Z <code>pi</code> łączę się poleceniem <code>2nazwa_komputera</code> (np <code>2nafisa</code>). Skrypt do łączenia jest banalny:</p>
+<pre><code>#!/bin/bash
+REMOTE_HOST=&quot;nafisa&quot;
+REMOTE_PORT=&quot;22&quot;
+USER=&quot;pi&quot;
+ssh -p $REMOTE_PORT -l $USER $REMOTE_HOST</code></pre>
+<p>Żeby nafisa nie pytała się o hasło trzeba dokonać stosownej konfiguracji. Mianowicie na PCcie trzeba coś takiego wykonać</p>
+<pre><code>ssh-keygen -t rsa # ENTER na każde pytanie
+## Powstaną takie pliki (uwaga na prawa dostępu):
+ls -l ~/.ssh/
+-rw------- 1 tomek tomek  1843 lut 17  2019 id_rsa
+-rw-r--r-- 1 tomek tomek   409 lut 17  2019 id_rsa.pub
+-rw------- 1 tomek tomek 23006 gru  2 03:08 known_hosts</code></pre>
+<p>Teraz skopiować <code>authorized_keys</code> na odległą maszynę, np za pomocą:</p>
+<pre><code>scp ~/.ssh/id_rsa.pub username@serveraddress:~/.ssh/authorized_keys</code></pre>
+<p>albo zalogować się na odległej maszynie (nafisa)</p>
+<pre><code>vi ~/.ssh/authorized_keys</code></pre>
+<p>i wstać zawartość <code>id_rsa.pub</code> metodą kopiuj/wklej.</p>
+<h3 id="przesyłanie-plików-doz-odległego-komputera-sshfs">Przesyłanie plików do/z odległego komputera sshfs</h3>
+<p>Najlepszy sposób przesyłania plików to wykorzystanie <code>sshfs</code>:</p>
+<pre><code>sudo apt search sshfs
+sshfs/stable,now 2.10+repack-2 armhf [installed]
+  filesystem client based on SSH File Transfer Protocol
+
+## na Zulnarze już pewnie jest (patrz czy jest [installed])
+## jeżeli nie jest to:
+apt install sshfs</code></pre>
+<p>Teraz ja mam taki zwyczaj że mam katalog <code>~/Dist</code> (na PCcie) a w nim wszystkie maszyny, z którym się łączę:</p>
+<pre><code>ls -l ~/Dist
+razem 32
+drwxr-xr-x 2 tomek tomek 4096 mar 21  2020 aisara
+drwxr-xr-x 2 tomek tomek 4096 sty 18 08:51 danmarszal
+drwxr-xr-x 2 tomek tomek 4096 lut 15  2020 gulnara
+drwxr-xr-x 2 tomek tomek 4096 lis 23  2019 nafisa
+drwxr-xr-x 2 tomek tomek 4096 lis 23  2019 neptune
+drwxr-xr-x 2 tomek tomek 4096 kwi  1  2020 temp
+drwxr-xr-x 2 tomek tomek 4096 lis 23  2019 umbriel
+drwxr-xr-x 2 tomek tomek 4096 lip 31  2020 umida</code></pre>
+<p>Do łączenia używam skryptu np. <code>My-sshfs.sh</code>:</p>
+<pre><code>#!/bin/bash
+DEFAULTUSER=&#39;pi&#39;
+SSHFS=&quot;sshfs -o follow_symlinks&quot;
+PORT=22
+
+## Zamontuj/odmontuj:
+while test $# -gt 0; do
+  case &quot;$1&quot; in
+    -u) shift;  S=~/Dist/$1 ;  fusermount -u $S &amp;&amp;
+        echo &quot;** OK: unmounted!&quot; &amp;&amp; return ;;
+    nafisa*)  HOST=&quot;nafisa&quot; ; S=~/Dist/nafisa  USER=&quot;pi&quot; PORT=&quot;22&quot; ;;
+    gulnara*) HOST=&quot;gulnara&quot; ; S=gulnara  USER=&quot;pi&quot; PORT=&quot;22&quot; ;;
+  esac
+  shift
+done
+##
+$SSHFS -p $PORT &quot;${USER}@$HOST:/&quot; $MOUNTPT</code></pre>
+<p>Uruchomienie:</p>
+<pre><code>My-sshfs.sh zulnara
+ls -l ~/Dist/zulnara/
+razem 88
+drwxr-xr-x 1 root root  4096 wrz 17  2019 bin
+drwxr-xr-x 1 root root  3072 sty  1  1970 boot
+drwxr-xr-x 1 root root  3800 lut  3 19:02 dev
+## odmontowanie
+My-sshfs.sh -u zulnara
+ls -l ~/Dist/nafisa/
+razem 0</code></pre>
+<h3 id="cron">Cron</h3>
+<p>Plik konfiguracyjny <code>cron</code>a trzymam w katalogu <code>~/Crontab</code>. Na zulnarze już jest <code>~/Crotab/crontab</code>:</p>
+<pre><code>ls -l ~/Crontab/crontab
+-rw-r--r-- 1 pi pi 3326 sty 21 14:14 crontab</code></pre>
+<p>Powinny być wpisy odczytujące dane pogodowe co godzinę (lub pół godziny) oraz wysyłające dane pogodowe raz na dzień na githuba.</p>
+<h3 id="konfigurowanie-serwera-www">Konfigurowanie serwera www</h3>
+<p>Powiedzmy że <code>apache</code> będzie używany:</p>
+<pre><code>apt install apache2 -y
+apt install php -y
+apt install mariadb-server-10.0 php-mysql -y
+
+## Uruchamianie 
+sudo systemctl start apache2
+## start|stop|restart
+## NB tak się zarządza każdą usługą w debianie</code></pre>
+<p>Instalowanie <code>mysql</code>/<code>mariadb</code>:</p>
+<pre><code>sudo mysql_secure_installation
+sudo mysql -u root -p
+
+## wpisać
+create database wordpress;
+GRANT ALL PRIVILEGES ON wordpress.* TO &#39;root&#39;@&#39;localhost&#39;
+  IDENTIFIED BY &#39;PASSWORD&#39;;
+
+FLUSH PRIVILEGES;
+## wyjść z terminala \q albo exit</code></pre>
+<p>Teraz pojawił się problem bo nie mogłem się zalogować a demon <code>mysql</code> nie reagował na polecenia zatrzymania. W końcu zabiłem demona za pomocą <code>kill -9</code>, a po starcie magicznie wszystko zadziałało.</p>
+<pre><code># Żeby zabić proces przypominam
+ps aux | grep mysql
+mysql    14802  0.0  7.4 608988 66412 ? ...
+sudo kill -9 14802</code></pre>
+<h3 id="instalowanie-wp">Instalowanie WP</h3>
+<pre><code>wget http://wordpress.org/latest.tar.gz
+## rozpakowanie w katalogu głównym tj
+## /var/www/html lub innym
+## główny katalog deklaruje się w
+## /etc/apache2/sites-available/000-default.conf</code></pre>
+<p>Konfigurowanie WP. Wpisałem z palca do <code>wp-config.php</code></p>
+<pre><code>define( &#39;DB_NAME&#39;, &#39;wordpress&#39; );
+define( &#39;DB_USER&#39;, &#39;root&#39; );
+define( &#39;DB_PASSWORD&#39;, &#39;????&#39; );</code></pre>
+<p>Potem uruchomiłem <code>http://localhost/wp-admin</code> i dokończyłem konfigurację. Powinno działać.</p>
+<p>CDN</p>
+</body>
+</html>
